@@ -29,6 +29,8 @@ class PostManager:
 
     def init_post_list(self):
         post_dir = os.path.join(global_config.file_path.post_dir)
+        if not os.path.exists(post_dir):
+            os.makedirs(post_dir)
         post_files = os.listdir(post_dir)
         post_list = []
         for post_file in post_files:
@@ -57,24 +59,23 @@ class PostManager:
         h1_list = tree.findall('.//h1')
         toc = []
         for i, h1 in enumerate(h1_list):
-            toc_item = PostTemplateTocItem(
-                title=h1.text_content(),
-                id=h1.attrib['id'],
-                h2s=[]
-            )
+            toc_item = PostTemplateTocItem(title=h1.text_content(),
+                                           id=h1.attrib['id'],
+                                           h2s=[])
             next_h1 = h1_list[i + 1] if i + 1 < len(h1_list) else None
             current = h1.getnext()
-            while current is not None and (next_h1 is None or current != next_h1):
+            while current is not None and (next_h1 is None
+                                           or current != next_h1):
                 if current.tag == 'h2':
-                    toc_item.h2s.append(PostTemplateTocItemH2(
-                        title=current.text_content(),
-                        id=current.attrib['id']
-                    ))
+                    toc_item.h2s.append(
+                        PostTemplateTocItemH2(title=current.text_content(),
+                                              id=current.attrib['id']))
                 current = current.getnext()
             toc.append(toc_item)
         return toc
 
-    def save_post_md(self, front: PostRawFront, post_content: str, file_name: str):
+    def save_post_md(self, front: PostRawFront, post_content: str,
+                     file_name: str):
         post_dir = os.path.join(global_config.file_path.post_dir)
         file_path = os.path.join(post_dir, file_name)
         with open(file_path, 'w') as f:
