@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ post.title }} - 可爱博客</title>
+    <style>
+        :root {
+            --pink: #ffb3c6;
+            --lavender: #e6b0ff;
+            --babyblue: #b3e0ff;
+        }
+        body {
+            background: linear-gradient(135deg, #fff0f5 0%, #f8f4ff 100%);
+            font-family: 'Comic Sans MS', '楷体', cursive;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 0 20px rgba(255, 179, 198, 0.3);
+        }
+        .post-header {
+            border-bottom: 3px dotted var(--pink);
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+        h1 {
+            color: #ff69b4;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 0 var(--lavender);
+            margin-bottom: 15px;
+        }
+        .tags {
+            margin: 10px 0;
+        }
+        .tag {
+            display: inline-block;
+            background: var(--babyblue);
+            padding: 5px 15px;
+            border-radius: 15px;
+            margin-right: 10px;
+            transition: all 0.3s;
+        }
+        .tag:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .content {
+            line-height: 1.8;
+            font-size: 1.1em;
+            color: #6b5b5b;
+        }
+        .toc {
+            position: fixed;
+            right: 30px;
+            top: 100px;
+            background: #fff;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 0 15px rgba(255, 182, 193, 0.4);
+            max-width: 250px;
+        }
+        .toc h3 {
+            color: #ff69b4;
+            margin: 0 0 10px 0;
+            font-size: 1.3em;
+        }
+        .toc ul {
+            list-style: none;
+            padding-left: 15px;
+        }
+        .toc li {
+            margin: 8px 0;
+        }
+        .toc a {
+            color: #ff88aa;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        .toc a:hover {
+            color: #ff69b4;
+            text-decoration: underline wavy;
+        }
+        .time {
+            color: #9b59b6;
+            font-size: 0.9em;
+            margin: 10px 0;
+        }
+        .heart {
+            animation: float 2s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="post-header">
+            <h1>{{ post.title }} <span class="heart">💖</span></h1>
+            <div class="time">
+                🕑 创建时间：{{ post.create_time }}<br>
+                ✏️ 更新时间：{{ post.update_time }}
+            </div>
+            <div class="tags">
+                {% for tag in post.tags %}
+                <span class="tag">🏷️ {{ tag }}</span>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="content">
+            {{ post.content|safe }}
+        </div>
+    </div>
+
+    <div class="toc">
+        <h3>📖 目录</h3>
+        <ul>
+            {% for h1 in toc %}
+            <li>
+                <a href="#{{ h1.id }}">🌸 {{ h1.title }}</a>
+                {% if h1.h2s %}
+                <ul>
+                    {% for h2 in h1.h2s %}
+                    <li><a href="#{{ h2.id }}">🍄 {{ h2.title }}</a></li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <script>
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // 添加动态背景效果
+        document.addEventListener('DOMContentLoaded', function() {
+            const colors = ['#ffb3c6', '#ffd9b3', '#b3ffd9', '#b3d9ff'];
+            setInterval(() => {
+                document.body.style.background = `linear-gradient(135deg, 
+                    ${colors[Math.floor(Math.random()*colors)]} 0%, 
+                    ${colors[Math.floor(Math.random()*colors)]} 100%)`;
+            }, 10000);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ post.title }}</title>
+    <style>
+        :root {
+            --primary: #2196F3;
+            --secondary: #607D8B;
+            --accent: #FF4081;
+        }
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            gap: 30px;
+        }
+        .article-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+            padding: 40px;
+            flex: 1;
+            backdrop-filter: blur(10px);
+        }
+        .post-title {
+            color: var(--primary);
+            font-size: 2.8em;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        .meta-info {
+            color: var(--secondary);
+            font-size: 0.9em;
+            margin-bottom: 25px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
+        }
+        .tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+        .tag {
+            background: var(--primary);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            transition: transform 0.2s;
+        }
+        .tag:hover {
+            transform: translateY(-2px);
+        }
+        .toc-container {
+            width: 280px;
+            position: sticky;
+            top: 20px;
+            height: fit-content;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .toc-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+        .toc-item {
+            padding: 8px 0;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .toc-item:hover {
+            color: var(--accent);
+            transform: translateX(5px);
+        }
+        .toc-h2 {
+            padding-left: 15px;
+            font-size: 0.9em;
+        }
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            .toc-container {
+                width: auto;
+                position: static;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="article-card">
+            <h1 class="post-title">{{ post.title }}</h1>
+            <div class="meta-info">
+                <div>发布时间：{{ post.create_time }}</div>
+                <div>最后更新：{{ post.update_time }}</div>
+                <div class="tags">
+                    {% for tag in post.tags %}
+                    <span class="tag">{{ tag }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="content">
+                {{ post.content|safe }}
+            </div>
+        </div>
+
+        <div class="toc-container">
+            <div class="toc-title">📑 文章目录</div>
+            {% for h1 in toc %}
+                <div class="toc-item" onclick="scrollToSection('{{ h1.id }}')">
+                    {{ h1.title }}
+                    {% for h2 in h1.h2s %}
+                        <div class="toc-item toc-h2" onclick="scrollToSection('{{ h2.id }}')">
+                            {{ h2.title }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script>
+        function scrollToSection(id) {
+            document.getElementById(id).scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+
+        // 目录高亮逻辑
+        window.addEventListener('scroll', () => {
+            const headers = document.querySelectorAll('h1, h2');
+            const tocItems = document.querySelectorAll('.toc-item');
+            
+            let currentActive = null;
+            headers.forEach(header => {
+                const rect = header.getBoundingClientRect();
+                if (rect.top <= 100) {
+                    currentActive = header.id;
+                }
+            });
+
+            tocItems.forEach(item => {
+                item.classList.remove('active');
+                if (item.textContent.trim() === document.getElementById(currentActive)?.textContent.trim()) {
+                    item.classList.add('active');
+                }
+            });
+        });
+
+        // 自动添加锚点
+        document.querySelectorAll('h1, h2').forEach(header => {
+            header.innerHTML += `<a href="#${header.id}" class="anchor">🔗</a>`;
+            header.querySelector('.anchor').style.display = 'none';
+            header.addEventListener('mouseover', () => {
+                header.querySelector('.anchor').style.display = 'inline';
+            });
+            header.addEventListener('mouseout', () => {
+                header.querySelector('.anchor').style.display = 'none';
+            });
+        });
+    </script>
+</body>
+</html>

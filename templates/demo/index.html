@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ blog_name }}</title>
+    <style>
+        :root {
+            --primary: #2a2a2a;
+            --accent: #00ff9d;
+            --text: #ffffff;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: var(--text);
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            margin: 0;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .blog-title {
+            font-size: 3.5rem;
+            text-transform: uppercase;
+            background: linear-gradient(45deg, var(--accent), #00ccff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 2px;
+            margin: 0;
+        }
+
+        .tag-cloud {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 3rem;
+        }
+
+        .tag-item {
+            padding: 0.5rem 1.2rem;
+            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+
+        .tag-item:hover {
+            transform: translateY(-2px);
+            background: var(--accent);
+            color: var(--primary);
+        }
+
+        .tag-item.active {
+            background: var(--accent);
+            color: var(--primary);
+            border-color: rgba(0,0,0,0.1);
+        }
+
+        .post-list {
+            display: grid;
+            gap: 2rem;
+        }
+
+        .post-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 2rem;
+            transition: transform 0.3s ease;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .post-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .post-title {
+            font-size: 1.8rem;
+            margin: 0 0 1rem;
+            color: var(--accent);
+        }
+
+        .post-meta {
+            display: flex;
+            gap: 1.5rem;
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 1rem;
+        }
+
+        .post-tags {
+            display: flex;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+        }
+
+        .post-tag {
+            font-size: 0.9rem;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            background: rgba(0, 255, 157, 0.1);
+            border: 1px solid var(--accent);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1 class="blog-title">{{ blog_name }}</h1>
+        </header>
+
+        <div class="tag-cloud">
+            <div class="tag-item" data-tag="all">全部</div>
+            {% for tag in tags %}
+            <div class="tag-item" data-tag="{{ tag.tag_name }}">{{ tag.tag_name }} ({{ tag.tag_length }})</div>
+            {% endfor %}
+        </div>
+
+        <div class="post-list">
+            {% for post in posts %}
+            <article class="post-card" data-tags="{{ post.tags | join(',') }}">
+                <a href="{{ post.url }}" style="text-decoration: none; color: inherit;">
+                    <h2 class="post-title">{{ post.title }}</h2>
+                    <div class="post-meta">
+                        <time>{{ post.create_time }}</time>
+                        <span>#{{ post.post_id }}</span>
+                    </div>
+                    <div class="post-tags">
+                        {% for tag in post.tags %}
+                        <span class="post-tag">{{ tag }}</span>
+                        {% endfor %}
+                    </div>
+                </a>
+            </article>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script>
+        document.querySelectorAll('.tag-item').forEach(tag => {
+            tag.addEventListener('click', function() {
+                document.querySelectorAll('.tag-item').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                
+                const selectedTag = this.dataset.tag;
+                filterPosts(selectedTag);
+            });
+        });
+
+        function filterPosts(tag) {
+            const posts = document.querySelectorAll('.post-card');
+            posts.forEach(post => {
+                const postTags = post.dataset.tags.split(',');
+                if (tag === 'all' || postTags.includes(tag)) {
+                    post.style.display = 'block';
+                } else {
+                    post.style.display = 'none';
+                }
+            });
+        }
+
+        // 初始显示所有文章
+        filterPosts('all');
+    </script>
+</body>
+</html>
