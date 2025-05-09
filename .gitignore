@@ -9,9 +9,6 @@ wheels/
 # Virtual environments
 .venv
 
-# posts
-posts/
-
 # output
 output/posts/
 output/index.html
