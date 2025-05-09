@@ -241,7 +241,7 @@ class defaultTemplateData(BaseSettings):
 
 class Settings(BaseSettings):
     file_path: filePaths = filePaths()
-    api_key: str
+    api_key: str = ""
     default_prompt: defaultPrompt = defaultPrompt()
     default_template_data: defaultTemplateData = defaultTemplateData()
     model_config = SettingsConfigDict(env_file=".env")
