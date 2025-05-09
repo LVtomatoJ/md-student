@@ -16,6 +16,10 @@ class Control:
         pass
 
     def render_all_page(self, template_name: str = 'random'):
+        if not os.path.exists(global_config.file_path.output_dir):
+            os.makedirs(global_config.file_path.output_dir)
+        if not os.path.exists(os.path.join(global_config.file_path.output_dir, 'posts')):
+            os.makedirs(os.path.join(global_config.file_path.output_dir, 'posts'))
         if template_name == 'random':
             template_name = random.choice(template_manager.get_template_list())
         template_info = template_manager.get_template_info(template_name)
@@ -38,8 +42,6 @@ class Control:
                 'toc': post_toc,
             }
             final_html = Template(post_template).render(post_data)
-            if not os.path.exists(os.path.join(global_config.file_path.output_dir, 'posts')):
-                os.makedirs(os.path.join(global_config.file_path.output_dir, 'posts'))
             with open(os.path.join(global_config.file_path.output_dir, 'posts', f'{post.file_name.split(".")[0]}.html'),'w') as f: # noqa
                 f.write(final_html)
             tag_list_counter.update(post.front.tags.split(','))
