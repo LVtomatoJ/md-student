@@ -29,3 +29,9 @@ use uv env run
 ```bash
 python3 main.py
 ```
+
+## Build
+
+```bash
+pythin3 build.py
+```

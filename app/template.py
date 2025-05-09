@@ -12,7 +12,7 @@ class TemplateManager:
     def load_template_list(self):
         for dir_name in os.listdir(global_config.file_path.template_dir):
             dir_path = os.path.join(global_config.file_path.template_dir, dir_name)
-            if os.path.isdir(dir_path):
+            if os.path.isdir(dir_path) and dir_name not in self.template_list:
                 self.template_list.append(dir_name)
 
     def __init__(self):
