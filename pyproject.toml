@@ -7,7 +7,8 @@ requires-python = ">=3.12"
 dependencies = [
     "jinja2>=3.1.6",
     "lxml>=5.3.1",
-    "markdown>=3.7",
+    "markdown-it-py>=3.0.0",
+    "mdit-py-plugins>=0.4.2",
     "openai>=1.69.0",
     "pydantic-settings>=2.8.1",
     "pyyaml>=6.0.2",

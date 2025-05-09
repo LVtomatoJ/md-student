@@ -3,8 +3,11 @@ import os
 from setting import global_config
 from typing import List
 from model.post import PostRaw, PostTemplateTocItemH2, PostTemplateTocItem, PostRawFront
-from markdown import markdown
+from markdown_it import MarkdownIt
+from mdit_py_plugins.anchors import anchors_plugin
 from lxml import html
+
+md = MarkdownIt().use(anchors_plugin)
 
 
 class PostManager:
@@ -52,7 +55,7 @@ class PostManager:
             return content
 
     def post_md_to_html(self, post_content: str) -> str:
-        return markdown(post_content, extensions=['toc'])
+        return md.render(post_content)
 
     def post_html_to_toc(self, post_html: str) -> List[PostTemplateTocItem]:
         tree = html.fromstring(post_html)
