@@ -13,3 +13,6 @@ dependencies = [
     "pyyaml>=6.0.2",
     "toga>=0.5.0",
 ]
+
+[tool.setuptools]
+packages = ["app", "model"]
