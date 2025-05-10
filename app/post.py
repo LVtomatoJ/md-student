@@ -30,18 +30,21 @@ class PostManager:
             front_dict, _ = self.split_post_file(post_content)
             return PostRaw(front=front_dict)
 
+    def add_post(self, post: PostRaw):
+        if any(p.file_name == post.file_name for p in self.post_list):
+            return
+        self.post_list.append(post)
+
     def init_post_list(self):
-        post_dir = os.path.join(global_config.file_path.post_dir)
-        if not os.path.exists(post_dir):
-            os.makedirs(post_dir)
-        post_files = os.listdir(post_dir)
-        post_list = []
-        for post_file in post_files:
-            file_path = os.path.join(post_dir, post_file)
-            post = self.read_post_file(file_path)
-            post.file_name = post_file
-            post_list.append(post)
-        self.post_list = post_list
+        post_dir = global_config.file_path.post_dir
+        full_path = os.path.join(post_dir)
+        for root, dirs, files in os.walk(full_path):
+            for file in files:
+                if file.endswith('.md'):
+                    file_path = os.path.join(root, file)
+                    post = self.read_post_file(file_path)
+                    post.file_name = os.path.relpath(file_path, post_dir)
+                    self.add_post(post)
 
     def get_post_list(self) -> List[PostRaw]:
         return self.post_list
@@ -89,9 +92,5 @@ if __name__ == '__main__':
 
     def main():
         post_manager = PostManager()
-        post_content = post_manager.get_post_content('SecondPost.md')
-        post_html = post_manager.post_md_to_html(post_content)
-        toc = post_manager.post_html_to_toc(post_html)
-        print(toc)
-
+        print(post_manager.post_list)
     main()
