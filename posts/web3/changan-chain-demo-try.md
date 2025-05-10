@@ -423,10 +423,12 @@ Tips:
 
 - testdata目录与cmc目录下cp的一致 但是需要格外不同org的sdk_config如这里用到的sdk_config_org1就是对应的生产商和对应的证书
 - 这里需contract_name为用cmc上床合约时制定的名称字符串
+- 合约的sdk_config需要删除rpc_client部分才可以成功加载
+- sdk_config_org2需要把原本wx-org1修改为wx-org2另外node_addr: "127.0.0.1:12301"修改为node_addr: "127.0.0.1:12302" 后续的同理
 
 合约返回的结果是Protobuf所以还需要转换为Python中的字典
 
-```Python
+```python
 from google.protobuf import json_format
 json_string = json_format.MessageToJson(proto_obj,preserving_proto_field_name=True)
 result = json.loads(json_string)
@@ -473,6 +475,6 @@ async def query_batch(batch_id: str = Form(...)):
 
 至此SDK的调用也完成了
 
-## 总
+## 总结
 
 其实这个demo整体跑下来花了蛮多时间的(7h+),一开始想在arm上跑但是遇到了各种难题，尝试控制台部署也是奇奇怪怪的问题，而且自己的能力没有办法支持深入阅读源码去解决，但是好在最后也是顺利完成了部署和开发。后续在Web3中我会更想尝试solana的开发，看看有没有什么更好的点子可以实现在区块链！另外Go和Rust作为补充需要提高提高了！
