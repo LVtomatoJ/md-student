@@ -25,7 +25,7 @@ update_time: 2025-05-10 16:21:00
 | 获取变量       | 🚫 直接导入不返回命名空间字典               | ✅ 返回一个字典，包含变量                    |
 | 类似 `-m` 调用 | 🚫                             | ✅ `run_module()` 相当于 `python -m` |
 
-```Python
+```yython
 # runpy demo
 import runpy
 
@@ -51,7 +51,7 @@ mod.run_task(arg1=123)
 
 因为本质还是一个定时任务,所以有一个[apscheduler](https://apscheduler.readthedocs.io/en/3.x/)的封装
 
-```Python
+```python
 class TaskScheduler:
     def __init__(self):
         self.scheduler = AsyncIOScheduler()
@@ -72,7 +72,7 @@ class TaskScheduler:
 
 init时需要从数据库读出task表中所有的任务并判断是否启动
 
-```Python
+```python
 # load_all_tasks
 async def load_all_tasks(self):
     session = next(get_session())
@@ -89,7 +89,7 @@ async def load_all_tasks(self):
 
 ### add_task
 
-```Python
+```python
 async def add_task(self, task: Task):
     if str(task.id) in self._running_jobs:
         return
@@ -118,7 +118,7 @@ func是从_load_task_function的返回值他会用importlib加载对应的python
 
 ### _load_task_function
 
-```Python
+```python
 def _load_task_function(self, task_id: int) -> Optional[callable]:
     try:
         file_path = Path(f'app/functions/{task_id}.py')
@@ -158,7 +158,7 @@ ModuleSpec->针对特定模块的导入系统相关状态的规范说明(好长.
 
 这里贴一下spec_from_file_location的源码
 
-```Python
+```python
 def spec_from_file_location(name, location=None, *, loader=None,
                             submodule_search_locations=_POPULATE):
     """Return a module spec based on a file location.
