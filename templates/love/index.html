@@ -57,6 +57,8 @@
             cursor: pointer;
             transition: all 0.3s;
             font-size: 16px;
+            min-width: 80px;
+            white-space: nowrap;
         }
 
         .tag-button.active {
@@ -120,8 +122,7 @@
     <div class="tag-filter" id="tagFilter">
         {% for tag in tags %}
         <button class="tag-button" 
-                data-tag="{{ tag.tag_name }}"
-                style="width: {{ tag.tag_length * 15 }}px">
+                data-tag="{{ tag.tag_name }}">
             {{ tag.tag_name }}
         </button>
         {% endfor %}
